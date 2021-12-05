@@ -42,13 +42,59 @@ const User = ({ elem, getUsers, token }) => {
       console.log(error);
     }
   };
+
+  const deleteTask = async (task_id) => {
+    try {
+      const result = await axios.delete(
+        `${process.env.REACT_APP_BASE_URL}/taskByAdmin/${elem._id}`, {
+            task_id
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (typeof result.data === "object") {
+        console.log(typeof result.data);
+        userTasks();
+      }
+    } catch (error) {
+      console.log(error);
+      // getTasks()
+    }
+  };
   return (
     <div>
  
       {bool ? (
         <>
           {tasks && (
-            <>{tasks.length !== 0 ? tasks.map((elem) =><div>{elem.task}<br></br></div>) : <p>no task</p>}
+            <>{tasks.length !== 0 ? tasks.map((elem) =>
+            <div>{elem.task} 
+            <p 
+            
+            onClick=
+            {()=>{deleteTask(elem._id)}}
+
+            className="icon"
+            
+            >X</p>
+            
+        
+            
+            </div>
+            )
+            : 
+            
+            <p>no task</p>
+        
+        }
+
+
+
+
             <button onClick={(e)=>{
                 e.preventDefault();
                 setBool(false)
