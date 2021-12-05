@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Task from "../Task";
 import "./style.css";
-const Tasks = ({ token, setToken }) => {
+import Home from "../Home";
+
+const Tasks = ({ token, setToken ,admin}) => {
   const [tasks, setTasks] = useState([]);
   const [task, setTask] = useState([]);
 
@@ -10,12 +12,19 @@ const Tasks = ({ token, setToken }) => {
     getTasks();
   }, []);
   const getTasks = async () => {
-    const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/tasks`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    setTasks(result.data);
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/tasks`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setTasks(result.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const addTask = async () => {
@@ -43,8 +52,11 @@ const Tasks = ({ token, setToken }) => {
   const logout = () => {
     localStorage.removeItem("token");
     setToken("");
+    
   };
   return (
+    !admin && token?
+  
     <div className="home">
       <h1>Todos List</h1>
       <div>
@@ -72,16 +84,18 @@ const Tasks = ({ token, setToken }) => {
           <p>you don't have any task yet ..</p>
         </>
       )}
-            <span
-          className="icon"
-          onClick={(e) => {
-            e.preventDefault();
-            logout();
-          }}
-        >
-          (logout)
-        </span>
+      <span
+        className="icon"
+        onClick={(e) => {
+          e.preventDefault();
+          logout();
+        }}
+      >
+        (logout)
+      </span>
     </div>
+    :
+<Home />
   );
 };
 

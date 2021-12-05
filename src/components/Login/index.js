@@ -3,7 +3,7 @@ import axios from "axios";
 import Tasks from "../Tasks";
 import "./style.css";
 import Task from "../Task";
-const Login = ({ setToken , token}) => {
+const Login = ({ setToken , token ,setAdmin ,admin}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 //   const [role, setRole] = useState("61a6552cb604baf56847ff91");
@@ -25,16 +25,25 @@ const Login = ({ setToken , token}) => {
   
         setMessage("Success");
         localStorage.setItem("token", result.data.token);
-        setToken(result.data.token);
+       
+        if(result.data.result.role === "61a6551bb604baf56847ff8f"){
+            console.log("Admin");
+            setToken(result.data.token);
+            localStorage.setItem("admin", true);
+            setAdmin(true)
+        }else {
+            setToken(result.data.token);
+            setAdmin(false)
+        }
+       
       }
     } catch (error) {
       console.log(error);
       setMessage("faild");
     }
   };
-  return (
-      <>
-    {token? <> <Tasks/></> :<>
+  return ( <>
+ 
     
     
         <div className="home">
@@ -54,21 +63,14 @@ const Login = ({ setToken , token}) => {
         placeholder="Pasword here .."
         onChange={(e) => setPassword(e.target.value)}
       />
-      {/* <input
-        id="role"
-        type="role"
-        name="role"
-        className="form-input"
-        placeholder="Role here .."
-        onChange={(e) => setRole(e.target.role)}
-      /> */}
       <button onClick={login}>Login</button>
       {message ? message : ""}
     </div>
     </>
     
-}
-   </>
+
+ 
+
   );
 };
 
