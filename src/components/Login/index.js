@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
-
+import Tasks from "../Tasks";
 import "./style.css";
-const Login = ({ setToken }) => {
+import Task from "../Task";
+const Login = ({ setToken , token}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("61a6552cb604baf56847ff91");
+//   const [role, setRole] = useState("61a6552cb604baf56847ff91");
   const [message, setMessage] = useState("");
 
   const login = async () => {
@@ -24,7 +25,7 @@ const Login = ({ setToken }) => {
   
         setMessage("Success");
         localStorage.setItem("token", result.data.token);
-        // setToken(result.data.token);
+        setToken(result.data.token);
       }
     } catch (error) {
       console.log(error);
@@ -32,7 +33,12 @@ const Login = ({ setToken }) => {
     }
   };
   return (
-    <div className="home">
+      <>
+    {token? <> <Tasks/></> :<>
+    
+    
+        <div className="home">
+      
       <h1>LOGIN FORM</h1>
       <input
         type="email"
@@ -59,6 +65,10 @@ const Login = ({ setToken }) => {
       <button onClick={login}>Login</button>
       {message ? message : ""}
     </div>
+    </>
+    
+}
+   </>
   );
 };
 

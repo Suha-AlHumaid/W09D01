@@ -15,11 +15,11 @@ const Home = () => {
     <>
       {!token ? (
         <div className="home">
-          <Login setToken="setToken"/>
+          <Login setToken={setToken} token={token}/>
           <Register />
         </div>
       ) : (
-        <Tasks token={token} />
+        <Tasks token={token} setToken={setToken} />
       )}
     </>
   );

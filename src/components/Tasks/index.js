@@ -1,29 +1,88 @@
-import React ,{useEffect, useState}from 'react'
-import axios from 'axios'
-import Task from '../Task'
-import "./style.css"
-const Tasks = ({token}) => {
- const [tasks, setTasks] = useState([])
-    useEffect(() => {
-        getTasks()
-    }, [])
-    const getTasks =async ()=>{
-        const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/tasks`,{
-            headers: {
-                Authorization: `Bearer ${token}` 
-        }})
-       setTasks(result.data)
-       console.log(result.data);
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Task from "../Task";
+import "./style.css";
+const Tasks = ({ token, setToken }) => {
+  const [tasks, setTasks] = useState([]);
+  const [task, setTask] = useState([]);
 
+  useEffect(() => {
+    getTasks();
+  }, []);
+  const getTasks = async () => {
+    const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/tasks`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setTasks(result.data);
+  };
+
+  const addTask = async () => {
+    try {
+      const result = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/task`,
+        {
+          task,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (typeof result.data === "object") {
+        console.log(typeof result.data);
+        getTasks();
+      }
+    } catch (error) {
+      console.log(error);
     }
-    return (
-        <div className="home">
-            <h1>Your Todos</h1>
-            {tasks&& tasks.map(elem=>
-              <Task key={elem._id} elem={elem} token={token} getTasks={getTasks} />
-            )}
-        </div>
-    )
-}
+  };
+  const logout = () => {
+    localStorage.removeItem("token");
+    setToken("");
+  };
+  return (
+    <div className="home">
+      <h1>Todos List</h1>
+      <div>
+        <input
+          className="form-input"
+          type="text"
+          placeholder="Type your task here ..."
+          onChange={(e) => setTask(e.target.value)}
+        />
+        <button onClick={addTask}>ADD NEW</button>
+      </div>
+      {tasks.length !== 0 ? (
+        <>
+          {tasks.map((elem) => (
+            <Task
+              key={elem._id}
+              elem={elem}
+              token={token}
+              getTasks={getTasks}
+            />
+          ))}
+        </>
+      ) : (
+        <>
+          <p>you don't have any task yet ..</p>
+        </>
+      )}
+            <span
+          className="icon"
+          onClick={(e) => {
+            e.preventDefault();
+            logout();
+          }}
+        >
+          (logout)
+        </span>
+    </div>
+  );
+};
 
-export default Tasks
+export default Tasks;
